@@ -33,6 +33,7 @@ public class RendezVousService {
         RendezVous rdv = rdvMapper.toEntity(rdvDTO);
         rdv.setPatient(patient);
         rdv.setMedecin(medecin);
+        rdv.setStatut(StatutRendezVous.PLANIFIE);
         RendezVous savedRdv = rdvRepo.save(rdv);
         return rdvMapper.toDTO(savedRdv);
     }
