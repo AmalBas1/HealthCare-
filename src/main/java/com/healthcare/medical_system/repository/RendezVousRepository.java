@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RendezVousRepository extends JpaRepository<RendezVous, Long> {
-    List<RendezVousRepository> findByPatientId(Long id);
-    List<RendezVousRepository> findByMedecinId(Long id);
+    List<RendezVous> findByPatientId(Long id);
+    List<RendezVous> findByMedecinId(Long id);
 }
