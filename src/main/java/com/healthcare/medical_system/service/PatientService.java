@@ -35,7 +35,7 @@ public class PatientService {
     @Transactional
     public void supprimerPatient(Long id){
         Patient patient = patientRepository.findById(id).orElseThrow(()->new RuntimeException("patient non trouvé"));
-        patientRepository.deleteById(id);
+        patientRepository.delete(patient);
     }
 
     @Transactional
