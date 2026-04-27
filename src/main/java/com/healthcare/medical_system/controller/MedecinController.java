@@ -4,6 +4,7 @@ import com.healthcare.medical_system.dto.MedecinDTO;
 
 import com.healthcare.medical_system.service.MedecinService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +20,14 @@ public class MedecinController {
 
     @PostMapping()
     @Operation(summary = "ajouter médecin")
-    public ResponseEntity<MedecinDTO> ajouterMedecin(@RequestBody MedecinDTO medecinDTO){
+    public ResponseEntity<MedecinDTO> ajouterMedecin(@Valid @RequestBody MedecinDTO medecinDTO){
         MedecinDTO medecinAjoute = medecinService.ajouterMedecin(medecinDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(medecinAjoute);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "modifier médecin")
-    public ResponseEntity<MedecinDTO> modifierMedecin(@PathVariable Long id,  @RequestBody MedecinDTO medecinDTO){
+    public ResponseEntity<MedecinDTO> modifierMedecin(@Valid @PathVariable Long id,  @RequestBody MedecinDTO medecinDTO){
         MedecinDTO updatedMedecin = medecinService.modifierMedecin(id,medecinDTO);
         return ResponseEntity.ok(updatedMedecin);
     }

@@ -3,6 +3,7 @@ package com.healthcare.medical_system.controller;
 import com.healthcare.medical_system.dto.DossierMedicalDTO;
 import com.healthcare.medical_system.service.DossierMedicalService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,21 +18,21 @@ public class DossierMedicalController {
 
     @PostMapping
     @Operation(summary = "créer un dossier médical")
-    public ResponseEntity<DossierMedicalDTO> creerDossierMedical(@RequestBody DossierMedicalDTO dossierDTO){
+    public ResponseEntity<DossierMedicalDTO> creerDossierMedical(@Valid @RequestBody DossierMedicalDTO dossierDTO){
         DossierMedicalDTO dossierAjoute = dossierService.creerDossierMedical(dossierDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(dossierAjoute);
     }
 
     @PostMapping("/{dossierId}/diagnostic")
     @Operation(summary = "ajouter un diagnostic à un dossier médical")
-    public ResponseEntity<DossierMedicalDTO> ajouterDiagnostic(@PathVariable Long dossierId, @RequestBody String diagnostic){
+    public ResponseEntity<DossierMedicalDTO> ajouterDiagnostic(@Valid @PathVariable Long dossierId, @RequestBody String diagnostic){
         DossierMedicalDTO diagnosticAjoute = dossierService.ajouterDiagnostic(dossierId, diagnostic);
         return ResponseEntity.ok(diagnosticAjoute);
     }
 
     @PostMapping("/{dossierId}/observation")
     @Operation(summary = "ajouter une observation à un dossier médical")
-    public ResponseEntity<DossierMedicalDTO> ajouterObservation(@PathVariable Long dossierId, @RequestBody String observation){
+    public ResponseEntity<DossierMedicalDTO> ajouterObservation(@Valid @PathVariable Long dossierId, @RequestBody String observation){
         DossierMedicalDTO observationAjoute = dossierService.ajouterObservation(dossierId, observation);
         return ResponseEntity.ok(observationAjoute);
     }
