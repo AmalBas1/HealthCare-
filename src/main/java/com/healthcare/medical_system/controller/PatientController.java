@@ -1,19 +1,17 @@
 package com.healthcare.medical_system.controller;
 
 import com.healthcare.medical_system.dto.PatientDTO;
-import com.healthcare.medical_system.entity.Patient;
 import com.healthcare.medical_system.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/patients")
 public class PatientController {
