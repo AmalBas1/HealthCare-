@@ -18,6 +18,7 @@ public interface DossierMedicalMapper {
     @Mapping(source = "patient.id", target = "patientId")
     DossierMedicalDTO toDTO(DossierMedical dossierMedical);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "patientId", target = "patient.id")
     void updateEntityFromDto(DossierMedicalDTO dossierMedicalDTO, @MappingTarget DossierMedical dossierMedical);
 

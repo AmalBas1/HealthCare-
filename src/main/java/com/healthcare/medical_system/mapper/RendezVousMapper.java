@@ -20,6 +20,7 @@ public interface RendezVousMapper {
     @Mapping(source="medecin.id", target="medecinId")
     RendezVousDTO toDTO(RendezVous rendezVous);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "patientId", target="patient.id")
     @Mapping(source = "medecinId", target="medecin.id")
     void updateEntityFromDto(RendezVousDTO rendezVousDTO, @MappingTarget RendezVous rendezVous);
