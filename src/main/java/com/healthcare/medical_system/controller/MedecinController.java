@@ -27,7 +27,7 @@ public class MedecinController {
 
     @PutMapping("/{id}")
     @Operation(summary = "modifier médecin")
-    public ResponseEntity<MedecinDTO> modifierMedecin(@Valid @PathVariable Long id,  @RequestBody MedecinDTO medecinDTO){
+    public ResponseEntity<MedecinDTO> modifierMedecin( @PathVariable Long id, @Valid @RequestBody MedecinDTO medecinDTO){
         MedecinDTO updatedMedecin = medecinService.modifierMedecin(id,medecinDTO);
         return ResponseEntity.ok(updatedMedecin);
     }

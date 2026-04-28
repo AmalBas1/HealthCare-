@@ -27,7 +27,7 @@ public class RendezVousController {
 
     @PutMapping("/{id}")
     @Operation(summary = "modifier un rendez-vous")
-    public ResponseEntity<RendezVousDTO> modifierRendezVous(@Valid @PathVariable Long id, @RequestBody RendezVousDTO rdvDTO) {
+    public ResponseEntity<RendezVousDTO> modifierRendezVous( @PathVariable Long id, @Valid @RequestBody RendezVousDTO rdvDTO) {
         RendezVousDTO updatedRdv = rdvService.modifierRendezVous(id, rdvDTO);
         return ResponseEntity.ok(updatedRdv);
     }

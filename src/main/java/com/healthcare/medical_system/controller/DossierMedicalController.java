@@ -25,14 +25,14 @@ public class DossierMedicalController {
 
     @PostMapping("/{dossierId}/diagnostic")
     @Operation(summary = "ajouter un diagnostic à un dossier médical")
-    public ResponseEntity<DossierMedicalDTO> ajouterDiagnostic(@Valid @PathVariable Long dossierId, @RequestBody String diagnostic){
+    public ResponseEntity<DossierMedicalDTO> ajouterDiagnostic( @PathVariable Long dossierId,@Valid @RequestBody String diagnostic){
         DossierMedicalDTO diagnosticAjoute = dossierService.ajouterDiagnostic(dossierId, diagnostic);
         return ResponseEntity.ok(diagnosticAjoute);
     }
 
     @PostMapping("/{dossierId}/observation")
     @Operation(summary = "ajouter une observation à un dossier médical")
-    public ResponseEntity<DossierMedicalDTO> ajouterObservation(@Valid @PathVariable Long dossierId, @RequestBody String observation){
+    public ResponseEntity<DossierMedicalDTO> ajouterObservation( @PathVariable Long dossierId, @Valid @RequestBody String observation){
         DossierMedicalDTO observationAjoute = dossierService.ajouterObservation(dossierId, observation);
         return ResponseEntity.ok(observationAjoute);
     }

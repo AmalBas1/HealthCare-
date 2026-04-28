@@ -27,7 +27,7 @@ public class PatientController {
 
     @PutMapping("/{id}")
     @Operation(summary = "modifier patient")
-    public ResponseEntity<PatientDTO> modifierPatient(@Valid @PathVariable Long id, @RequestBody PatientDTO patientDTO){
+    public ResponseEntity<PatientDTO> modifierPatient( @PathVariable Long id, @Valid @RequestBody PatientDTO patientDTO){
         PatientDTO updatedPatient = patientService.ModifierPatient(id, patientDTO);
         return ResponseEntity.ok(updatedPatient);
     }
@@ -41,7 +41,7 @@ public class PatientController {
 
     @GetMapping
     @Operation(summary = "liste de tous les patients")
-    public ResponseEntity<List<PatientDTO>> listerPatients(ServletRequest servletRequest){
+    public ResponseEntity<List<PatientDTO>> listerPatients(){
         List<PatientDTO> patients = patientService.listerPatients();
         return ResponseEntity.ok(patients);
     }
