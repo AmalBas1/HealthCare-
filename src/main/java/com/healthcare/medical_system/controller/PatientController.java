@@ -3,7 +3,6 @@ package com.healthcare.medical_system.controller;
 import com.healthcare.medical_system.dto.PatientDTO;
 import com.healthcare.medical_system.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.ServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
