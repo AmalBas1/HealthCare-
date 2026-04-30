@@ -12,6 +12,7 @@ import com.healthcare.medical_system.repository.MedecinRepository;
 import com.healthcare.medical_system.repository.PatientRepository;
 import com.healthcare.medical_system.repository.RendezVousRepository;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,18 +34,23 @@ class RendezVousServiceTest {
     @Autowired
     private PatientRepository patientRepo;
 
+    Patient p;
+    Medecin m;
+
+    @BeforeEach
+    void setup(){
+        String uniqueId = UUID.randomUUID().toString();
+         p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
+         m =medecinRepo.save( new Medecin(null, "fatima","dentiste","fatima" + uniqueId + "@email.com","060000001"));
+    }
 
     @Test
     void creerRendezVous(){
-        String uniqueId = UUID.randomUUID().toString();
-        Patient p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
-        Medecin m =medecinRepo.save( new Medecin(null, "fatima","dentiste","fatima" + uniqueId + "@email.com","060000001"));
 
         RendezVousDTO dto = new RendezVousDTO();
         dto.setMedecinId(m.getId());
         dto.setPatientId(p.getId());
         dto.setDateRendezVous(LocalDateTime.now().plusDays(2));
-
 
         RendezVousDTO resultat = rdvService.creerRendezVous(dto);
 
@@ -55,9 +61,7 @@ class RendezVousServiceTest {
 
     @Test
     void modifierRendezVous(){
-        String uniqueId = UUID.randomUUID().toString();
-        Patient p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
-        Medecin m =medecinRepo.save( new Medecin(null, "fatimaa","dentiste","fatima" + uniqueId + "@email.com","060000001"));
+
         RendezVous rdv = rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
 
 
@@ -78,9 +82,7 @@ class RendezVousServiceTest {
 
     @Test
     void listerRendezVous(){
-        String uniqueId = UUID.randomUUID().toString();
-        Patient p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
-        Medecin m =medecinRepo.save( new Medecin(null, "fatimaa","dentiste","fatima" + uniqueId + "@email.com","060000001"));
+
         rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
         rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(2), StatutRendezVous.CONFIRME,p, m ));
 
@@ -93,9 +95,7 @@ class RendezVousServiceTest {
 
     @Test
     void rechercherParPatient(){
-        String uniqueId = UUID.randomUUID().toString();
-        Patient p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
-        Medecin m =medecinRepo.save( new Medecin(null, "fatimaa","dentiste","fatima" + uniqueId + "@email.com","060000001"));
+
         rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
 
 
@@ -109,9 +109,8 @@ class RendezVousServiceTest {
 
     @Test
     void rechercherParMedecin(){
-        String uniqueId = UUID.randomUUID().toString();
-        Patient p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
-        Medecin m =medecinRepo.save( new Medecin(null, "fatimaa","dentiste","fatima" + uniqueId + "@email.com","060000001"));
+
+
         rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
 
         List<RendezVousDTO> resultat = rdvService.rechercherParMedecin(m.getId());
@@ -124,9 +123,7 @@ class RendezVousServiceTest {
 
     @Test
     void annulerRendezVous(){
-        String uniqueId = UUID.randomUUID().toString();
-        Patient p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
-        Medecin m =medecinRepo.save( new Medecin(null, "fatimaa","dentiste","fatima" + uniqueId + "@email.com","060000001"));
+
         RendezVous rdv = rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
 
 
