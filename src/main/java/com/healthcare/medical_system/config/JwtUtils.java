@@ -26,15 +26,13 @@ public class JwtUtils {
 
 
 
-    public String genererToken( String username, String role) {
-        Map<String, String> claims = new HashMap<>();
-        claims.put("role", role);
+    public String genererToken( String username) {
+
         return Jwts.builder()
-                .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
 
     }
