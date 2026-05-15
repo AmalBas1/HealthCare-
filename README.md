@@ -3,17 +3,18 @@
 
 
 ## Description
-HealthCare+ est une application backend permettant de gérer les patients, les médecins, les rendez-vous et les dossiers médicaux d'un système de santé.
+HealthCare+ est une application backend permettant de gérer les patients, les médecins, les rendez-vous et les dossiers médicaux d'un système de santé, tout en assurant la sécurité des données sensibles.
 
 
 ## Technologies utilisées
 - **Java 17**
-- **Spring Boot**
+- **Spring Boot 3**
+- **Spring Security 6** (JWT)
 - **Spring Data JPA / Hibernate**
 - **Flyway** (migrations BDD)
 - **MySQL**
 - **MapStruct** (DTO Mapper)
-- **Swagger / OpenAPI** (documentation)
+- **Swagger** (documentation)
 - **JUnit** (tests)
 - **Docker**
 - **Maven**
@@ -27,22 +28,27 @@ HealthCare+ est une application backend permettant de gérer les patients, les m
 | Rendez-vous     | Créer, Modifier, Annuler, Lister, Rechercher par patient/médecin |
 | Dossier Médical | Créer, Ajouter diagnostic, Ajouter observations, Consulter |
 
+## Nouvelles Fonctionnalités (v2)
+- **Sécurité Avancée** : Authentification via **JWT** (JSON Web Token) avec Spring Security 6.
+- **Gestion des Erreurs** : Centralisation des exceptions via un `GlobalExceptionHandler`.
+- **Validation de Données** : Utilisation de Jakarta Validation sur les DTOs pour garantir l'intégrité des entrées.
 
 ## Structure du projet
 ```
 src/
 ├── main/
 │   ├── java/com/healthcare/
-│   │   ├── controller/
-│   │   ├── dto/
-│   │   ├── entity/
-│   │   ├── exception/
-│   │   ├── mapper/
-│   │   └── repository/
-│   │   └── service/
+│   │   ├── config/          # Configuration Sécurité & JWT
+│   │   ├── controller/      # AuthController, PatientController...
+│   │   ├── dto/             # LoginRequest, AuthResponse, PatientDTO...
+│   │   ├── entity/          # Entités JPA
+│   │   ├── exception/       # GlobalExceptionHandler, Custom Exceptions
+│   │   ├── mapper/          # Mappers MapStruct
+│   │   ├── repository/      # Interfaces JpaRepository
+│   │   └── service/         # Logique métier & AuthService
 │   └── resources/
 │       ├── application.properties
-│       └── db/migration/
+│       └── db/migration/    # Scripts Flyway (V1__init.sql...)
 └── test/
 ```
 ## Diagrammes UML
