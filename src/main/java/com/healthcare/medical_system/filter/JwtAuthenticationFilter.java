@@ -26,29 +26,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        try {
+
             String authHeader = request.getHeader("Authorization");
 
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);
 
+                if (jwtUtils.isTokenValid(token)) {
+
                 String username = jwtUtils.extractUsername(token);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    if (jwtUtils.isTokenValid(token)) {
+
                         UsernamePasswordAuthenticationToken auth =
                                 new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
                         SecurityContextHolder.getContext().setAuthentication(auth);
                     }
-                }
+                }else{
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"message\": \"Session expirée ou token invalide, merci de vous reconnecter.\"}");
+                    return;
             }
-            filterChain.doFilter(request, response);
 
-        } catch (ExpiredJwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
-            response.setContentType("application/json");
-            response.getWriter().write("{\"message\": \"Session expirée, merci de vous reconnecter.\"}");
         }
+        filterChain.doFilter(request, response);
+
     }
+
 
 }
