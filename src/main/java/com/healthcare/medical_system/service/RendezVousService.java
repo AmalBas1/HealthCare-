@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,8 +55,8 @@ public class RendezVousService {
     }
 
     @Transactional
-    public Page<RendezVousDTO> listerRendezVous(int page, int size){
-        Pageable pageable = PageRequest.of(page,size);
+    public Page<RendezVousDTO> listerRendezVous(int page, int size, String sort){
+        Pageable pageable = PageRequest.of(page,size, Sort.Direction.fromString(sort), "dateRendezVous");
        Page<RendezVous> rdv= rdvRepo.findAll(pageable);
         return rdv.map(rdvMapper::toDTO);
     }

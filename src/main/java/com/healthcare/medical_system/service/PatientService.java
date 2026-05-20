@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,8 +43,8 @@ public class PatientService {
     }
 
     @Transactional
-    public Page<PatientDTO> listerPatients(int page, int size){
-        Pageable pageable = PageRequest.of(page,size);
+    public Page<PatientDTO> listerPatients(int page, int size,String sort ){
+        Pageable pageable = PageRequest.of(page,size,Sort.Direction.fromString(sort), "nom");
         Page<Patient> patientPage = patientRepository.findAll(pageable);
         return patientPage.map(patientMapper::toDTO);
 

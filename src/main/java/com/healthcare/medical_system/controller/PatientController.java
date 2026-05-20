@@ -42,8 +42,9 @@ public class PatientController {
     @GetMapping
     @Operation(summary = "liste paginée de tous les patients")
     public ResponseEntity<Page<PatientDTO>> listerPatients(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "5") int size){
-        Page<PatientDTO> patients = patientService.listerPatients(page,size);
+                                                           @RequestParam(defaultValue = "5") int size,
+                                                           @RequestParam(defaultValue = "asc") String sortDir){
+        Page<PatientDTO> patients = patientService.listerPatients(page,size,sortDir);
         return ResponseEntity.ok(patients);
     }
 

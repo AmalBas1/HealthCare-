@@ -36,8 +36,9 @@ public class RendezVousController {
     @GetMapping
     @Operation(summary = "liste paginée de tous les rendez-vous")
     public ResponseEntity<Page<RendezVousDTO>> listerRendezVous(@RequestParam(defaultValue = "0") int page,
-                                                                @RequestParam(defaultValue = "5") int size) {
-        Page<RendezVousDTO> rdv = rdvService.listerRendezVous(page,size);
+                                                                @RequestParam(defaultValue = "5") int size,
+                                                                @RequestParam(defaultValue = "asc") String sortDir) {
+        Page<RendezVousDTO> rdv = rdvService.listerRendezVous(page,size,sortDir);
         return ResponseEntity.ok(rdv);
     }
 
