@@ -6,11 +6,11 @@ import com.healthcare.medical_system.service.MedecinService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,9 +40,10 @@ public class MedecinController {
     }
 
     @GetMapping
-    @Operation(summary = "liste de tous les médecins")
-    public ResponseEntity<List<MedecinDTO>> listerMedecins(){
-        List<MedecinDTO> medecins = medecinService.listerMedecins();
+    @Operation(summary = "liste paginée de tous les médecins")
+    public ResponseEntity<Page<MedecinDTO>> listerMedecins(@RequestParam(defaultValue = "0") int page,
+                                                                                           @RequestParam(defaultValue = "5") int size){
+        Page<MedecinDTO> medecins = medecinService.listerMedecins(page,size);
         return ResponseEntity.ok(medecins);
     }
 

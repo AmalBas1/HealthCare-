@@ -5,6 +5,7 @@ import com.healthcare.medical_system.service.RendezVousService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,23 +34,28 @@ public class RendezVousController {
     }
 
     @GetMapping
-    @Operation(summary = "liste de tous les rendez-vous")
-    public ResponseEntity<List<RendezVousDTO>> listerRendezVous() {
-        List<RendezVousDTO> rdv = rdvService.listerRendezVous();
+    @Operation(summary = "liste paginée de tous les rendez-vous")
+    public ResponseEntity<Page<RendezVousDTO>> listerRendezVous(@RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "5") int size) {
+        Page<RendezVousDTO> rdv = rdvService.listerRendezVous(page,size);
         return ResponseEntity.ok(rdv);
     }
 
     @GetMapping("/patient/{patientId}")
-    @Operation(summary = "liste de tous les rendez_vous d'un patient")
-    public ResponseEntity<List<RendezVousDTO>> rechercherParPatient(@PathVariable Long patientId) {
-        List<RendezVousDTO> rdvPatient = rdvService.rechercherParPatient(patientId);
+    @Operation(summary = "liste paginée de tous les rendez_vous d'un patient")
+    public ResponseEntity<Page<RendezVousDTO>> rechercherParPatient(@PathVariable Long patientId,
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "5") int size) {
+        Page<RendezVousDTO> rdvPatient = rdvService.rechercherParPatient(patientId,page,size);
         return ResponseEntity.ok(rdvPatient);
     }
 
     @GetMapping("/medecin/{medecinId}")
-    @Operation(summary = "liste de tous les rendez_vous d'un médecin")
-    public ResponseEntity<List<RendezVousDTO>> rechercherParMedecin(@PathVariable Long medecinId) {
-        List<RendezVousDTO> rdvMedecin = rdvService.rechercherParMedecin(medecinId);
+    @Operation(summary = "liste paginée de tous les rendez_vous d'un médecin")
+    public ResponseEntity<Page<RendezVousDTO>> rechercherParMedecin(@PathVariable Long medecinId,
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "5") int size) {
+        Page<RendezVousDTO> rdvMedecin = rdvService.rechercherParMedecin(medecinId,page,size);
         return ResponseEntity.ok(rdvMedecin);
     }
     @PostMapping("/{id}/annuler")
