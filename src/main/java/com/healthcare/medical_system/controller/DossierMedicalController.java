@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/dossiers-medicaux")
+@RequestMapping("/api/dossiers-medicaux")
 public class DossierMedicalController {
     private final DossierMedicalService dossierService;
 
