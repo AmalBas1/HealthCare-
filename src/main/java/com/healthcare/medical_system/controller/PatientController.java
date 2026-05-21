@@ -55,5 +55,16 @@ public class PatientController {
         return ResponseEntity.ok(patient);
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Recherche paginée et triée des patients par nom")
+    public ResponseEntity<Page<PatientDTO>> rechercherPatientsParNom(
+            @RequestParam String nom,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Page<PatientDTO> patients = patientService.rechercherPatientsParNom(nom, page, size, sortDir);
+        return ResponseEntity.ok(patients);
+    }
+
 
 }

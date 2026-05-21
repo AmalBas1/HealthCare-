@@ -82,4 +82,10 @@ public class RendezVousService {
         RendezVous rdvSaved = rdvRepo.save(rdv);
         return rdvMapper.toDTO(rdvSaved);
     }
+    @Transactional
+    public Page<RendezVousDTO> rechercherRendezVousParStatut(StatutRendezVous statut, int page, int size, String sortDir) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(sortDir), "dateRendezVous");
+        Page<RendezVous> rdvPage = rdvRepo.findByStatut(statut, pageable);
+        return rdvPage.map(rdvMapper::toDTO);
+    }
 }

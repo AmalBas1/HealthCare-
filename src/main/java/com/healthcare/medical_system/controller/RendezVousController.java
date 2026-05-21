@@ -1,6 +1,7 @@
 package com.healthcare.medical_system.controller;
 
 import com.healthcare.medical_system.dto.RendezVousDTO;
+import com.healthcare.medical_system.entity.StatutRendezVous;
 import com.healthcare.medical_system.service.RendezVousService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -64,5 +65,15 @@ public class RendezVousController {
     public ResponseEntity<RendezVousDTO> annulerRendezVous(@PathVariable Long id){
         RendezVousDTO rdvAnnule = rdvService.annulerRendezVous(id);
         return ResponseEntity.ok(rdvAnnule);
+    }
+    @GetMapping("/search")
+    @Operation(summary = "Recherche paginée et triée des rendez-vous par statut")
+    public ResponseEntity<Page<RendezVousDTO>> rechercherRendezVousParStatut(
+            @RequestParam StatutRendezVous statut,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Page<RendezVousDTO> rdv = rdvService.rechercherRendezVousParStatut(statut, page, size, sortDir);
+        return ResponseEntity.ok(rdv);
     }
 }

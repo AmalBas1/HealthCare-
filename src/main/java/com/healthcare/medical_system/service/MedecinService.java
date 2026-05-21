@@ -47,5 +47,11 @@ public class MedecinService {
         Page<Medecin> medecins = medecinRepository.findAll(pageable);
         return medecins.map(medecinMapper :: toDTO);
     }
+    @Transactional
+    public Page<MedecinDTO> rechercherMedecinsParSpecialite(String specialite, int page, int size, String sortDir) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(sortDir), "specialite");
+        Page<Medecin> medecinsPage = medecinRepository.findBySpecialiteContainingIgnoreCase(specialite, pageable);
+        return medecinsPage.map(medecinMapper::toDTO);
+    }
 
 }

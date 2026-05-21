@@ -56,5 +56,12 @@ public class PatientService {
         return patientMapper.toDTO(patient);
     }
 
+    @Transactional
+    public Page<PatientDTO> rechercherPatientsParNom(String nom, int page, int size, String sortDir) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(sortDir), "nom");
+        Page<Patient> patientPage = patientRepository.findByNomContainingIgnoreCase(nom, pageable);
+        return patientPage.map(patientMapper::toDTO);
+    }
+
 }
 
