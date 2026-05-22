@@ -6,6 +6,10 @@ import com.healthcare.medical_system.mapper.PatientMapper;
 import com.healthcare.medical_system.repository.PatientRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,9 +43,10 @@ public class PatientService {
     }
 
     @Transactional
-    public List<PatientDTO> listerPatients(){
-        List<Patient> patients = patientRepository.findAll();
-        return patientMapper.toDtoList(patients);
+    public Page<PatientDTO> listerPatients(int page, int size,String sort ){
+        Pageable pageable = PageRequest.of(page,size,Sort.Direction.fromString(sort), "nom");
+        Page<Patient> patientPage = patientRepository.findAll(pageable);
+        return patientPage.map(patientMapper::toDTO);
 
     }
 
@@ -49,6 +54,13 @@ public class PatientService {
     public PatientDTO consulterPatient(Long id){
         Patient patient = patientRepository.findById(id).orElseThrow(() -> new RuntimeException("patient non trouvé"));
         return patientMapper.toDTO(patient);
+    }
+
+    @Transactional
+    public Page<PatientDTO> rechercherPatientsParNom(String nom, int page, int size, String sortDir) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(sortDir), "nom");
+        Page<Patient> patientPage = patientRepository.findByNomContainingIgnoreCase(nom, pageable);
+        return patientPage.map(patientMapper::toDTO);
     }
 
 }

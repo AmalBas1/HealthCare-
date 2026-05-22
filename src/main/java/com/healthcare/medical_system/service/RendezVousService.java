@@ -12,6 +12,10 @@ import com.healthcare.medical_system.repository.PatientRepository;
 import com.healthcare.medical_system.repository.RendezVousRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,21 +55,24 @@ public class RendezVousService {
     }
 
     @Transactional
-    public List<RendezVousDTO> listerRendezVous(){
-       List<RendezVous> rdv= rdvRepo.findAll();
-        return rdvMapper.toDtoList(rdv);
+    public Page<RendezVousDTO> listerRendezVous(int page, int size, String sort){
+        Pageable pageable = PageRequest.of(page,size, Sort.Direction.fromString(sort), "dateRendezVous");
+       Page<RendezVous> rdv= rdvRepo.findAll(pageable);
+        return rdv.map(rdvMapper::toDTO);
     }
 
     @Transactional
-    public List<RendezVousDTO> rechercherParPatient(Long id){
-       List<RendezVous> rdvPatient = rdvRepo.findByPatientId(id);
-        return rdvMapper.toDtoList(rdvPatient);
+    public Page<RendezVousDTO> rechercherParPatient(Long id, int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+       Page<RendezVous> rdvPatient = rdvRepo.findByPatientId(id,pageable);
+        return rdvPatient.map(rdvMapper::toDTO);
     }
 
     @Transactional
-    public List<RendezVousDTO> rechercherParMedecin(Long id){
-        List<RendezVous> rdvMedecin = rdvRepo.findByMedecinId(id);
-        return rdvMapper.toDtoList(rdvMedecin);
+    public Page<RendezVousDTO> rechercherParMedecin(Long id, int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<RendezVous> rdvMedecin = rdvRepo.findByMedecinId(id,pageable);
+        return rdvMedecin.map(rdvMapper::toDTO);
     }
 
     @Transactional
@@ -74,5 +81,11 @@ public class RendezVousService {
         rdv.setStatut(StatutRendezVous.ANNULE);
         RendezVous rdvSaved = rdvRepo.save(rdv);
         return rdvMapper.toDTO(rdvSaved);
+    }
+    @Transactional
+    public Page<RendezVousDTO> rechercherRendezVousParStatut(StatutRendezVous statut, int page, int size, String sortDir) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(sortDir), "dateRendezVous");
+        Page<RendezVous> rdvPage = rdvRepo.findByStatut(statut, pageable);
+        return rdvPage.map(rdvMapper::toDTO);
     }
 }

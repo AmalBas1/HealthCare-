@@ -5,6 +5,7 @@ import com.healthcare.medical_system.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/patients")
+@RequestMapping("/api/patients")
 public class PatientController {
     private final PatientService patientService;
 
@@ -39,9 +40,11 @@ public class PatientController {
     }
 
     @GetMapping
-    @Operation(summary = "liste de tous les patients")
-    public ResponseEntity<List<PatientDTO>> listerPatients(){
-        List<PatientDTO> patients = patientService.listerPatients();
+    @Operation(summary = "liste paginée de tous les patients")
+    public ResponseEntity<Page<PatientDTO>> listerPatients(@RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "5") int size,
+                                                           @RequestParam(defaultValue = "asc") String sortDir){
+        Page<PatientDTO> patients = patientService.listerPatients(page,size,sortDir);
         return ResponseEntity.ok(patients);
     }
 
@@ -50,6 +53,17 @@ public class PatientController {
     public ResponseEntity<PatientDTO> consulterPatient(@PathVariable Long id){
         PatientDTO patient = patientService.consulterPatient(id);
         return ResponseEntity.ok(patient);
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Recherche paginée et triée des patients par nom")
+    public ResponseEntity<Page<PatientDTO>> rechercherPatientsParNom(
+            @RequestParam String nom,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Page<PatientDTO> patients = patientService.rechercherPatientsParNom(nom, page, size, sortDir);
+        return ResponseEntity.ok(patients);
     }
 
 

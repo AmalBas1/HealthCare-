@@ -30,20 +30,22 @@ public class AuthService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
+        user.setRole(request.getRole());
 
 
         userRepo.save(user);
 
-        String token = jwtUtils.genererToken(user.getUsername());
+        String token = jwtUtils.genererToken(user.getUsername(), user.getRole());
 
         return new AuthResponse(token);
 
     }
 
-    public String login(LoginRequest request){
+    public AuthResponse login(LoginRequest request){
         User user = userRepo.findByUsername(request.getUsername()).orElseThrow(()-> new RuntimeException("utilisateur non trouvé"));
          if(passwordEncoder.matches(request.getPassword(), user.getPassword())){
-             return jwtUtils.genererToken(user.getUsername());
+             String token = jwtUtils.genererToken(user.getUsername(), user.getRole());
+             return new AuthResponse(token);
          }else {
              throw new RuntimeException("password incorrect");
          }
