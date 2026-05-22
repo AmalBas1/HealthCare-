@@ -51,6 +51,12 @@ src/
 │       └── db/migration/    # Scripts Flyway (V1__init.sql...)
 └── test/
 ```
+## Partie 3 : Fonctionnalités Avancées 
+### - Pagination et Tri
+Pour garantir des performances optimales et une gestion fluide des données, toutes les entités principales (Patients, Médecins, Rendez-vous, Dossiers Médicaux) prennent en charge la **Pagination** côté serveur et le **Tri** calculé dynamiquement.
+- Les points de terminaison (endpoints) acceptent des paramètres de page personnalisés (`page`, `size`) ainsi qu'un tri basé sur des critères spécifiques (`sortBy`, `direction`).
+- Une architecture hautement évolutive (scalable), parfaitement adaptée à la gestion de volumes importants de données médicales.
+
 ## Diagrammes UML
 
 ### ==> Diagramme de Classe
