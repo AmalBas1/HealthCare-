@@ -28,4 +28,5 @@ public class PatientDTO {
     @Past(message = "la date de naissance doit être au passé")
     @NotNull(message = "la date de naissance est obligatoire")
     private LocalDate dateNaissance;
+    private Long userId;
 }

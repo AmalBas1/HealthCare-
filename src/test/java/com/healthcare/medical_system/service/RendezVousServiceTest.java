@@ -40,8 +40,8 @@ class RendezVousServiceTest {
     @BeforeEach
     void setup(){
         String uniqueId = UUID.randomUUID().toString();
-         p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
-         m =medecinRepo.save( new Medecin(null, "fatima","dentiste","fatima" + uniqueId + "@email.com","060000001"));
+         //p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
+        // m =medecinRepo.save( new Medecin(null, "fatima","dentiste","fatima" + uniqueId + "@email.com","060000001"));
     }
 
     @Test

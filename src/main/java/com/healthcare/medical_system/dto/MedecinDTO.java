@@ -19,4 +19,5 @@ public class MedecinDTO {
     @NotBlank(message = "l'email est obligatoire")
     private String email;
     private String telephone;
+    private Long userId;
 }

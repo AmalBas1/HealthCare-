@@ -14,5 +14,6 @@ public interface RendezVousRepository extends JpaRepository<RendezVous, Long> {
     Page<RendezVous> findByPatientId(Long patientId, Pageable pageable);
     Page<RendezVous> findByMedecinId(Long medecinId, Pageable pageable);
     Page<RendezVous> findByStatut(StatutRendezVous statut, Pageable pageable);
+    boolean existsByPatientIdAndMedecinUserUsername(Long patientId, String username);
 
 }

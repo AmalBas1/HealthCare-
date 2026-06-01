@@ -21,7 +21,8 @@ public class Medecin {
     private String email;
     private String telephone;
 
-
-
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

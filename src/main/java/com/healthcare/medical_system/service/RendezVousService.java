@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +29,6 @@ public class RendezVousService {
     private final RendezVousMapper rdvMapper;
     private final PatientRepository patientRepository;
     private final MedecinRepository medecinRepository;
-    private final MedecinMapper medecinMapper;
 
 
     @Transactional
@@ -56,6 +57,9 @@ public class RendezVousService {
 
     @Transactional
     public Page<RendezVousDTO> listerRendezVous(int page, int size, String sort){
+        if (!hasRole("ADMIN")) {
+            throw new AccessDeniedException("Accès refusé : Vous n'êtes pas autorisé à lister globalement.");
+        }
         Pageable pageable = PageRequest.of(page,size, Sort.Direction.fromString(sort), "dateRendezVous");
        Page<RendezVous> rdv= rdvRepo.findAll(pageable);
         return rdv.map(rdvMapper::toDTO);
@@ -63,6 +67,7 @@ public class RendezVousService {
 
     @Transactional
     public Page<RendezVousDTO> rechercherParPatient(Long id, int page, int size){
+        verifierAccesRendezVousPatient(id);
         Pageable pageable = PageRequest.of(page,size);
        Page<RendezVous> rdvPatient = rdvRepo.findByPatientId(id,pageable);
         return rdvPatient.map(rdvMapper::toDTO);
@@ -70,6 +75,7 @@ public class RendezVousService {
 
     @Transactional
     public Page<RendezVousDTO> rechercherParMedecin(Long id, int page, int size){
+        verifierAccesRendezVousMedecin(id);
         Pageable pageable = PageRequest.of(page,size);
         Page<RendezVous> rdvMedecin = rdvRepo.findByMedecinId(id,pageable);
         return rdvMedecin.map(rdvMapper::toDTO);
@@ -87,5 +93,25 @@ public class RendezVousService {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(sortDir), "dateRendezVous");
         Page<RendezVous> rdvPage = rdvRepo.findByStatut(statut, pageable);
         return rdvPage.map(rdvMapper::toDTO);
+    }
+    private void verifierAccesRendezVousPatient(Long patientId){
+        if (hasRole("PATIENT") && !patientRepository.existsByIdAndUserUsername(patientId, usernameConnecte())) {
+            throw new AccessDeniedException("Acces refuse");
+        }
+    }
+
+    private void verifierAccesRendezVousMedecin(Long medecinId){
+        if (hasRole("MEDECIN") && !medecinRepository.existsByIdAndUserUsername(medecinId, usernameConnecte())) {
+            throw new AccessDeniedException("Acces refuse");
+        }
+    }
+
+    private String usernameConnecte(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    private boolean hasRole(String role){
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_" + role));
     }
 }

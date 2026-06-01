@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +32,7 @@ public class PatientService {
     @Transactional
     public PatientDTO ModifierPatient(Long id, PatientDTO patientDTO){
         Patient patient = patientRepository.findById(id).orElseThrow(()->new RuntimeException("patient non trouvé"));
+        verifierAccesPatient(patient);
         patientMapper.updateEntityFromDTO(patientDTO,patient);
         Patient updatedPatient = patientRepository.save(patient);
         return patientMapper.toDTO(updatedPatient);
@@ -53,6 +56,7 @@ public class PatientService {
     @Transactional
     public PatientDTO consulterPatient(Long id){
         Patient patient = patientRepository.findById(id).orElseThrow(() -> new RuntimeException("patient non trouvé"));
+        verifierAccesPatient(patient);
         return patientMapper.toDTO(patient);
     }
 
@@ -63,5 +67,19 @@ public class PatientService {
         return patientPage.map(patientMapper::toDTO);
     }
 
+    private void verifierAccesPatient(Patient patient){
+        if (hasRole("PATIENT") && (patient.getUser() == null || !patient.getUser().getUsername().equals(usernameConnecte()))) {
+            throw new AccessDeniedException("Acces refuse");
+        }
+    }
+
+    private String usernameConnecte(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    private boolean hasRole(String role){
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_" + role));
+    }
 }
 

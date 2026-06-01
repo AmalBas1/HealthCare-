@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 
 public interface MedecinRepository extends JpaRepository<Medecin, Long> {
     Page<Medecin> findBySpecialiteContainingIgnoreCase(String specialite, Pageable pageable);
+    boolean existsByIdAndUserUsername(Long id, String username);
 }

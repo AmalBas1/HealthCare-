@@ -1,14 +1,13 @@
 package com.healthcare.medical_system.dto;
 
 import com.healthcare.medical_system.entity.Role;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -26,5 +25,13 @@ public class RegisterRequest {
     private String password;
     @NotNull(message = "Le role est obligatoire(ADMIN, PATIENT, MEDECIN)")
     private Role role;
+
+
+    private String nom;
+    private String prenom;
+    private String telephone;
+    @Past(message = "la date de naissance doit être au passé")
+    private LocalDate dateNaissance;
+    private String specialite;
 
 }

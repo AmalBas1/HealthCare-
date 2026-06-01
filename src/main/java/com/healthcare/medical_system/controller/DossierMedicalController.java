@@ -5,6 +5,7 @@ import com.healthcare.medical_system.service.DossierMedicalService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,14 @@ public class DossierMedicalController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dossierAjoute);
     }
 
+    @GetMapping
+    @Operation(summary = "liste paginee de tous les dossiers medicaux")
+    public ResponseEntity<Page<DossierMedicalDTO>> listerDossiersMedicaux(@RequestParam(defaultValue = "0") int page,
+                                                                          @RequestParam(defaultValue = "5") int size){
+        Page<DossierMedicalDTO> dossiers = dossierService.listerDossiersMedicaux(page, size);
+        return ResponseEntity.ok(dossiers);
+    }
+
     @PostMapping("/{dossierId}/diagnostic")
     @Operation(summary = "ajouter un diagnostic à un dossier médical")
     public ResponseEntity<DossierMedicalDTO> ajouterDiagnostic( @PathVariable Long dossierId,@Valid @RequestBody String diagnostic){
@@ -37,10 +46,10 @@ public class DossierMedicalController {
         return ResponseEntity.ok(observationAjoute);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "consulter un  dossier médical")
-    public ResponseEntity<DossierMedicalDTO> ConsulterDossierMedical(@PathVariable Long id){
-        DossierMedicalDTO dossier = dossierService.ConsulterDossierMedical(id);
+    @GetMapping("/patient/{patientId}")
+    @Operation(summary = "Consulter le dossier médical d'un patient via son ID Patient")
+    public ResponseEntity<DossierMedicalDTO> ConsulterDossierMedical(@PathVariable Long patientId){
+        DossierMedicalDTO dossier = dossierService.consulterDossierParPatientId(patientId);
         return ResponseEntity.ok(dossier);
     }
 
