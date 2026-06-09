@@ -12,6 +12,8 @@ import com.healthcare.medical_system.repository.PatientRepository;
 import com.healthcare.medical_system.repository.RendezVousRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +34,7 @@ public class RendezVousService {
 
 
     @Transactional
+    @CacheEvict(allEntries = true)
     public RendezVousDTO creerRendezVous(RendezVousDTO rdvDTO){
         Patient patient = patientRepository.findById(rdvDTO.getPatientId()).orElseThrow(()->new RuntimeException("patient non trouvé"));
         Medecin medecin = medecinRepository.findById(rdvDTO.getMedecinId()).orElseThrow(()->new RuntimeException("medecin non trouvé"));
@@ -44,6 +47,7 @@ public class RendezVousService {
     }
 
     @Transactional
+    @CacheEvict(allEntries = true)
     public RendezVousDTO modifierRendezVous(Long id, RendezVousDTO rdvDTO){
         RendezVous rdv = rdvRepo.findById(id).orElseThrow(()->new RuntimeException("rendez-vous avec l'id: "+id+" n'existe pas'"));
         Patient patient = patientRepository.findById(rdvDTO.getPatientId()).orElseThrow(()->new RuntimeException("patient non trouvé"));
@@ -56,6 +60,7 @@ public class RendezVousService {
     }
 
     @Transactional
+    @Cacheable(value="rendez-vous")
     public Page<RendezVousDTO> listerRendezVous(int page, int size, String sort){
         if (!hasRole("ADMIN")) {
             throw new AccessDeniedException("Accès refusé : Vous n'êtes pas autorisé à lister globalement.");
@@ -82,6 +87,7 @@ public class RendezVousService {
     }
 
     @Transactional
+    @CacheEvict(value = "rendez-vous",allEntries = true)
     public RendezVousDTO annulerRendezVous(Long id){
         RendezVous rdv = rdvRepo.findById(id).orElseThrow(()->new RuntimeException("rendez-vous avec l'id: "+id+" n'existe pas'"));
         rdv.setStatut(StatutRendezVous.ANNULE);

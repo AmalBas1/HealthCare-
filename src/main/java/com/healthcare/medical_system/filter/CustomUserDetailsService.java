@@ -1,4 +1,4 @@
-package com.healthcare.medical_system.service;
+package com.healthcare.medical_system.filter;
 
 import com.healthcare.medical_system.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

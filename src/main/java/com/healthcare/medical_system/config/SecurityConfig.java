@@ -2,7 +2,7 @@ package com.healthcare.medical_system.config;
 
 
 import com.healthcare.medical_system.filter.JwtAuthenticationFilter;
-import com.healthcare.medical_system.service.CustomUserDetailsService;
+import com.healthcare.medical_system.filter.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

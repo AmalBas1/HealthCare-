@@ -9,6 +9,8 @@ import com.healthcare.medical_system.repository.PatientRepository;
 import com.healthcare.medical_system.repository.RendezVousRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ public class DossierMedicalService {
     private final RendezVousRepository rendezVousRepository;
 
     @Transactional
+    @CacheEvict(value = "dossiers-medicaux",allEntries = true)
     public DossierMedicalDTO creerDossierMedical (DossierMedicalDTO dossierMedicalDTO){
         Patient patient = patientRepository.findById(dossierMedicalDTO.getPatientId()).orElseThrow(()->new RuntimeException("patient non trouvé"));
         DossierMedical dossier = dossierMapper.toEntity(dossierMedicalDTO);
@@ -34,6 +37,7 @@ public class DossierMedicalService {
     }
 
     @Transactional
+    @Cacheable(value="dossiers-medicaux")
     public Page<DossierMedicalDTO> listerDossiersMedicaux(int page, int size){
         if (!hasRole("ADMIN")) {
             throw new AccessDeniedException("Accès refusé : Vous n'avez pas l'autorisation de l'accès global.");
@@ -44,6 +48,7 @@ public class DossierMedicalService {
     }
 
     @Transactional
+    @CacheEvict(value = "dossiers-medicaux", allEntries = true)
     public DossierMedicalDTO ajouterDiagnostic(Long id, String diagnostic){
         DossierMedical dossier = dossierRepo.findById(id).orElseThrow(()-> new RuntimeException("dossier introuvable"));
         verifierAccesDossier(dossier);
@@ -53,6 +58,7 @@ public class DossierMedicalService {
     }
 
     @Transactional
+    @CacheEvict(value = "dossiers-medicaux", allEntries = true)
     public DossierMedicalDTO ajouterObservation(Long id, String observation){
         DossierMedical dossier = dossierRepo.findById(id).orElseThrow(()->new RuntimeException("dossier médical non trouvé"));
         verifierAccesDossier(dossier);
