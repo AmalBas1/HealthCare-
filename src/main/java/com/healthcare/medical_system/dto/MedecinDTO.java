@@ -6,10 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class MedecinDTO {
+public class MedecinDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     @NotBlank(message = "le nom est obligatoire")
     private String nom;

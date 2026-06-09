@@ -6,6 +6,8 @@ import com.healthcare.medical_system.mapper.PatientMapper;
 import com.healthcare.medical_system.repository.PatientRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,7 @@ public class PatientService {
     private final PatientMapper patientMapper;
 
     @Transactional
+    @CacheEvict(value = "patients",allEntries = true)
     public PatientDTO ajouterPatient(PatientDTO patientDTO){
         Patient patient= patientMapper.toEntity(patientDTO);
         Patient savedPatient = patientRepository.save(patient);
@@ -30,6 +33,7 @@ public class PatientService {
     }
 
     @Transactional
+    @CacheEvict(value = "patients",allEntries = true)
     public PatientDTO ModifierPatient(Long id, PatientDTO patientDTO){
         Patient patient = patientRepository.findById(id).orElseThrow(()->new RuntimeException("patient non trouvé"));
         verifierAccesPatient(patient);
@@ -40,12 +44,14 @@ public class PatientService {
     }
 
     @Transactional
+    @CacheEvict(value = "patients",allEntries = true)
     public void supprimerPatient(Long id){
         Patient patient = patientRepository.findById(id).orElseThrow(()->new RuntimeException("patient non trouvé"));
         patientRepository.delete(patient);
     }
 
     @Transactional
+    @Cacheable(value="patients")
     public Page<PatientDTO> listerPatients(int page, int size,String sort ){
         Pageable pageable = PageRequest.of(page,size,Sort.Direction.fromString(sort), "nom");
         Page<Patient> patientPage = patientRepository.findAll(pageable);

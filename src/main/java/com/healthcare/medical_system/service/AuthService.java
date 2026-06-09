@@ -78,8 +78,7 @@ public class AuthService {
         );
         User user = userRepo.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-        Role roleObj = user.getRole();
-        String token = jwtUtils.genererToken(user.getUsername(), roleObj);
+        String token = jwtUtils.genererToken(user.getUsername(), user.getRole());
 
         return new AuthResponse(token);
 

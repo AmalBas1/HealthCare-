@@ -7,12 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RendezVousDTO {
+public class RendezVousDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     @NotNull(message = "la date et l'heure du rendez-vous sont obligatoires")
     @FutureOrPresent(message = "la date du rendez-vous doit-être au futur")
