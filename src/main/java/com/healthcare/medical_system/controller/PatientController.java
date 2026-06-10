@@ -1,12 +1,17 @@
 package com.healthcare.medical_system.controller;
 
 import com.healthcare.medical_system.dto.PatientDTO;
+import com.healthcare.medical_system.entity.Patient;
+import com.healthcare.medical_system.repository.PatientRepository;
 import com.healthcare.medical_system.service.PatientService;
+import com.healthcare.medical_system.service.PdfService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +22,8 @@ import java.util.List;
 @RequestMapping("/api/patients")
 public class PatientController {
     private final PatientService patientService;
+    private final PdfService pdfService;
+    private final PatientRepository patientRepo;
 
     @PostMapping()
     @Operation(summary = "ajouter un patient")
@@ -64,6 +71,37 @@ public class PatientController {
             @RequestParam(defaultValue = "asc") String sortDir) {
         Page<PatientDTO> patients = patientService.rechercherPatientsParNom(nom, page, size, sortDir);
         return ResponseEntity.ok(patients);
+    }
+
+    @GetMapping("/export/pdf")
+    public ResponseEntity<byte[]> downloadPdf() throws Exception {
+        List<Patient> patients = patientRepo.findAll();
+        byte[] pdfBytes = pdfService.generatePatientListPdf(patients);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "patients.pdf");
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> downloadPatientPdf(@PathVariable Long id) {
+        try {
+            Patient patient = patientRepo.findById(id).orElseThrow(() ->new RuntimeException("patient non trouvé"));
+
+            byte[] pdfBytes = pdfService.generateMDossierMedicalPdf(patient);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+
+            headers.setContentDispositionFormData("attachment", "dossier_" + patient.getNom() + ".pdf");
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
