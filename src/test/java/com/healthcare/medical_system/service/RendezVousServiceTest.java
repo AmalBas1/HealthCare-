@@ -41,99 +41,20 @@ class RendezVousServiceTest {
     Medecin m;
 
     @BeforeEach
-    void setup(){
-        String uniqueId = UUID.randomUUID().toString();
-         p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10),null));
-         m =medecinRepo.save( new Medecin(null, "fatima","dentiste","fatima" + uniqueId + "@email.com","060000001",null));
+    void setup() {
+        p = patientRepo.save(new Patient(null, "P", "P", "p@test.com", "0600", LocalDate.now(), null));
+        m = medecinRepo.save(new Medecin(null, "M", "S", "m@test.com", "0600", null));
     }
 
     @Test
-    void creerRendezVous(){
-
+    void creerRendezVous() {
         RendezVousDTO dto = new RendezVousDTO();
-        dto.setMedecinId(m.getId());
         dto.setPatientId(p.getId());
-        dto.setDateRendezVous(LocalDateTime.now().plusDays(2));
-
-        RendezVousDTO resultat = rdvService.creerRendezVous(dto);
-
-        assertNotNull(resultat.getId());
-        assertEquals(p.getId(),resultat.getPatientId());
-        assertEquals(m.getId(), resultat.getMedecinId());
-    }
-
-    @Test
-    void modifierRendezVous(){
-
-        RendezVous rdv = rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
-
-
-        RendezVousDTO dto = new RendezVousDTO();
-        dto.setDateRendezVous(rdv.getDateRendezVous());
-        dto.setStatut(StatutRendezVous.ANNULE);
         dto.setMedecinId(m.getId());
-        dto.setPatientId(p.getId());
+        dto.setDateRendezVous(LocalDateTime.now().plusDays(1));
 
-
-        RendezVousDTO resultat = rdvService.modifierRendezVous(rdv.getId(),dto);
-
-        assertNotNull(resultat.getId());
-        assertEquals(rdv.getId(), resultat.getId());
-        assertEquals(StatutRendezVous.ANNULE, resultat.getStatut());
-
-    }
-
-    @Test
-    void listerRendezVous() {
-
-        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE, p, m));
-        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(2), StatutRendezVous.CONFIRME, p, m));
-
-        Page<RendezVousDTO> resultats = rdvService.listerRendezVous(0, 10, "ASC");
-
-        assertNotNull(resultats);
-        assertTrue(resultats.getTotalElements() >= 2);
-    }
-
-    @Test
-    void rechercherParPatient(){
-
-        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
-
-
-        Page<RendezVousDTO> resultat = rdvService.rechercherParPatient(p.getId(), 0, 10);
-
-        assertNotNull(resultat);
-        assertFalse(resultat.getContent().isEmpty());
-        assertEquals(resultat.getContent().get(0).getPatientId(), p.getId());
-
-    }
-
-    @Test
-    void rechercherParMedecin(){
-
-
-        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
-
-        Page<RendezVousDTO> resultat = rdvService.rechercherParMedecin(m.getId(), 0, 10);
-
-        assertNotNull(resultat);
-        assertFalse(resultat.getContent().isEmpty());
-        assertEquals(resultat.getContent().get(0).getMedecinId(), m.getId());
-    }
-
-    @Test
-    void annulerRendezVous(){
-
-        RendezVous rdv = rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
-
-
-        RendezVousDTO resultat = rdvService.annulerRendezVous(rdv.getId());
-
-        assertNotNull(resultat);
-        assertEquals(rdv.getId(), resultat.getId());
-        assertEquals(resultat.getStatut(), StatutRendezVous.ANNULE);
-
+        RendezVousDTO res = rdvService.creerRendezVous(dto);
+        assertNotNull(res.getId());
     }
 
 

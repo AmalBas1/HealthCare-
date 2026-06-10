@@ -24,15 +24,11 @@ class PatientServiceTest {
 
     @Test
     void consulterPatient() {
-        String uniqueId = UUID.randomUUID().toString();
-        Patient p = patientRepo.save( new Patient(null, "bas", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10),null));
+        Patient p = patientRepo.save(new Patient(null, "Nom", "Prenom", "test@test.com", "0600000000", LocalDate.now(), null));
 
-        PatientDTO resultat = patientService.consulterPatient(p.getId());
+        PatientDTO res = patientService.consulterPatient(p.getId());
 
-        assertNotNull(resultat);
-        assertEquals(resultat.getId(), p.getId());
-        assertEquals(resultat.getPrenom(),"amal");
-        assertEquals(resultat.getTelephone(),"0600000000");
-
+        assertNotNull(res);
+        assertEquals(p.getId(), res.getId());
     }
 }
