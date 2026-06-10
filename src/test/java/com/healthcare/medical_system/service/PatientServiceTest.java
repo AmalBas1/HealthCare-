@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -14,6 +15,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
+@WithMockUser(roles = "ADMIN")
 class PatientServiceTest {
     @Autowired
     private PatientService patientService;
