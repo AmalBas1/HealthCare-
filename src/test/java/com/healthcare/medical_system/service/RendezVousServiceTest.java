@@ -6,8 +6,7 @@ import com.healthcare.medical_system.entity.Medecin;
 import com.healthcare.medical_system.entity.Patient;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.healthcare.medical_system.entity.RendezVous;
-import com.healthcare.medical_system.entity.StatutRendezVous;
+
 import com.healthcare.medical_system.repository.MedecinRepository;
 import com.healthcare.medical_system.repository.PatientRepository;
 import com.healthcare.medical_system.repository.RendezVousRepository;
@@ -16,8 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.security.test.context.support.WithMockUser;
+
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
@@ -28,7 +26,6 @@ import java.util.UUID;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-@WithMockUser(roles = "ADMIN")
 class RendezVousServiceTest {
     @Autowired
     private RendezVousService rdvService;
