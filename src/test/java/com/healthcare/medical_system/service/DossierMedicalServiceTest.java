@@ -17,24 +17,26 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 @SpringBootTest
 @Transactional
-@WithMockUser(roles = "ADMIN")
 class DossierMedicalServiceTest {
     @Autowired
     DossierMedicalService dossierService;
     @Autowired
-    DossierMedicalRepository dossierRepo;
-    @Autowired
     PatientRepository patientRepo;
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void creerDossierMedical() {
         String uniqueId = UUID.randomUUID().toString();
-        Patient p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10),null));
+        Patient p = patientRepo.save(new Patient(null, "bass", "amal",
+                "amal" + uniqueId + "@email.com", "0600000000", LocalDate.of(1990, 10, 10), null));
+
         DossierMedicalDTO dossier = new DossierMedicalDTO();
         dossier.setPatientId(p.getId());
+
         DossierMedicalDTO resultat = dossierService.creerDossierMedical(dossier);
+
         assertNotNull(resultat);
         assertNotNull(resultat.getId());
-        assertEquals(resultat.getPatientId(),p.getId());
+        assertEquals(resultat.getPatientId(), p.getId());
     }
 }

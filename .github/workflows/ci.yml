@@ -2,9 +2,12 @@ name: CI HealthCare
 
 on:
   push:
-    branches: [ "main", "Part4" ]
+    branches:
+      - main
+      - Part4
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build-test:
