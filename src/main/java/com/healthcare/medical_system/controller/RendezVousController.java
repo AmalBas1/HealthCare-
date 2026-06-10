@@ -1,14 +1,23 @@
 package com.healthcare.medical_system.controller;
 
 import com.healthcare.medical_system.dto.RendezVousDTO;
+import com.healthcare.medical_system.entity.Patient;
+import com.healthcare.medical_system.entity.RendezVous;
 import com.healthcare.medical_system.entity.StatutRendezVous;
+import com.healthcare.medical_system.repository.PatientRepository;
+import com.healthcare.medical_system.repository.RendezVousRepository;
+import com.healthcare.medical_system.service.PdfService;
 import com.healthcare.medical_system.service.RendezVousService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +27,9 @@ import java.util.List;
 @RequestMapping("/api/appointments")
 public class RendezVousController {
     private final RendezVousService rdvService;
+    private final PatientRepository patientRepo;
+    private final RendezVousRepository rdvRepo;
+    private final PdfService pdfService;
 
 
     @PostMapping
@@ -75,5 +87,45 @@ public class RendezVousController {
             @RequestParam(defaultValue = "asc") String sortDir) {
         Page<RendezVousDTO> rdv = rdvService.rechercherRendezVousParStatut(statut, page, size, sortDir);
         return ResponseEntity.ok(rdv);
+    }
+
+    @GetMapping("/patient/{id}/pdf")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<byte[]> downloadRendezVousPdf(@PathVariable Long id) {
+        try {
+            Patient patient = patientRepo.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Patient non trouvé"));
+
+            Page<RendezVousDTO> rdvPage = rdvService.rechercherParPatient(id, 0, 100);
+
+            List<RendezVousDTO> rdvList = rdvPage.getContent();
+
+            byte[] pdfBytes = pdfService.generateAppointmentListPdf(patient, rdvList);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "rendezvous_" + patient.getNom() + ".pdf");
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/report/download")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<byte[]> downloadReport(@RequestParam String title, @RequestParam String content) {
+        try {
+            byte[] pdfBytes = pdfService.generateSimpleReport(title, content);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "Rapport.pdf");
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

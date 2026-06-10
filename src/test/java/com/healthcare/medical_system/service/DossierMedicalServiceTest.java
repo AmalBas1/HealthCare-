@@ -26,13 +26,13 @@ class DossierMedicalServiceTest {
 
     @Test
     void creerDossierMedical() {
-//        String uniqueId = UUID.randomUUID().toString();
-//        Patient p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
-//        DossierMedicalDTO dossier = new DossierMedicalDTO();
-//        dossier.setPatientId(p.getId());
-//        DossierMedicalDTO resultat = dossierService.creerDossierMedical(dossier);
-//        assertNotNull(resultat);
-//        assertNotNull(resultat.getId());
-//        assertEquals(resultat.getPatientId(),p.getId());
+        String uniqueId = UUID.randomUUID().toString();
+        Patient p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10),null));
+        DossierMedicalDTO dossier = new DossierMedicalDTO();
+        dossier.setPatientId(p.getId());
+        DossierMedicalDTO resultat = dossierService.creerDossierMedical(dossier);
+        assertNotNull(resultat);
+        assertNotNull(resultat.getId());
+        assertEquals(resultat.getPatientId(),p.getId());
     }
 }
