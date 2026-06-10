@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,8 +41,8 @@ class RendezVousServiceTest {
     @BeforeEach
     void setup(){
         String uniqueId = UUID.randomUUID().toString();
-         //p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10)));
-        // m =medecinRepo.save( new Medecin(null, "fatima","dentiste","fatima" + uniqueId + "@email.com","060000001"));
+         p = patientRepo.save( new Patient(null, "bass", "amal", "amal" + uniqueId + "@email.com","0600000000", LocalDate.of(1990,10,10),null));
+         m =medecinRepo.save( new Medecin(null, "fatima","dentiste","fatima" + uniqueId + "@email.com","060000001",null));
     }
 
     @Test
@@ -80,46 +81,44 @@ class RendezVousServiceTest {
 
     }
 
-//    @Test
-//    void listerRendezVous(){
-//
-//        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
-//        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(2), StatutRendezVous.CONFIRME,p, m ));
-//
-//        List<RendezVousDTO> resultats = rdvService.listerRendezVous();
-//
-//        assertNotNull(resultats,"la liste ne doit pas être nulle ");
-//        assertTrue(resultats.size()>=2, "la liste doit contenir plus de 2 rendez-vous");
-//        assertNotNull(resultats.get(0).getId(),"l'id ne doit pas être null");
-//    }
+    @Test
+    void listerRendezVous() {
 
-//    @Test
-//    void rechercherParPatient(){
-//
-//        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
-//
-//
-//        List<RendezVousDTO> resultat = rdvService.rechercherParPatient(p.getId());
-//
-//        assertNotNull(resultat);
-//        assertNotNull(resultat.get(0).getId());
-//        assertEquals(resultat.get(0).getPatientId(), p.getId());
-//
-//    }
+        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE, p, m));
+        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(2), StatutRendezVous.CONFIRME, p, m));
 
-//    @Test
-//    void rechercherParMedecin(){
-//
-//
-//        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
-//
-//        List<RendezVousDTO> resultat = rdvService.rechercherParMedecin(m.getId());
-//
-//
-//        assertNotNull(resultat);
-//        assertNotNull(resultat.get(0).getId());
-//        assertEquals(resultat.get(0).getMedecinId(), m.getId());
-//    }
+        Page<RendezVousDTO> resultats = rdvService.listerRendezVous(0, 10, "ASC");
+
+        assertNotNull(resultats);
+        assertTrue(resultats.getTotalElements() >= 2);
+    }
+
+    @Test
+    void rechercherParPatient(){
+
+        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
+
+
+        Page<RendezVousDTO> resultat = rdvService.rechercherParPatient(p.getId(), 0, 10);
+
+        assertNotNull(resultat);
+        assertFalse(resultat.getContent().isEmpty());
+        assertEquals(resultat.getContent().get(0).getPatientId(), p.getId());
+
+    }
+
+    @Test
+    void rechercherParMedecin(){
+
+
+        rdvRepo.save(new RendezVous(null, LocalDateTime.now().plusDays(3), StatutRendezVous.PLANIFIE,p, m ));
+
+        Page<RendezVousDTO> resultat = rdvService.rechercherParMedecin(m.getId(), 0, 10);
+
+        assertNotNull(resultat);
+        assertFalse(resultat.getContent().isEmpty());
+        assertEquals(resultat.getContent().get(0).getMedecinId(), m.getId());
+    }
 
     @Test
     void annulerRendezVous(){

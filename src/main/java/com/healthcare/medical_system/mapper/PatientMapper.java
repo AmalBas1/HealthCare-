@@ -14,9 +14,14 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PatientMapper {
 
-   Patient  toEntity(PatientDTO patientDTO);
-  PatientDTO toDTO(Patient patient);
+    @Mapping(target = "user", ignore = true)
+    Patient  toEntity(PatientDTO patientDTO);
+
+    @Mapping(source = "user.id", target = "userId")
+    PatientDTO toDTO(Patient patient);
     @Mapping(target = "id", ignore = true)
-  void updateEntityFromDTO (PatientDTO patientDTO, @MappingTarget Patient patient);
+
+    @Mapping(target = "user", ignore = true)
+    void updateEntityFromDTO (PatientDTO patientDTO, @MappingTarget Patient patient);
     List<PatientDTO> toDtoList(List<Patient> patients);
 }
