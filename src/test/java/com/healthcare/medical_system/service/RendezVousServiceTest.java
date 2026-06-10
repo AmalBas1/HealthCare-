@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("test")
 @WithMockUser(roles = "ADMIN")
 class RendezVousServiceTest {
     @Autowired

@@ -2,7 +2,6 @@ package com.healthcare.medical_system.service;
 
 import com.healthcare.medical_system.dto.DossierMedicalDTO;
 import com.healthcare.medical_system.entity.Patient;
-import com.healthcare.medical_system.repository.DossierMedicalRepository;
 import com.healthcare.medical_system.repository.PatientRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -14,9 +13,11 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("test")
 class DossierMedicalServiceTest {
     @Autowired
     DossierMedicalService dossierService;
