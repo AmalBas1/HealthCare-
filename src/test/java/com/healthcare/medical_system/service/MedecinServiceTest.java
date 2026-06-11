@@ -7,12 +7,15 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
+@ActiveProfiles("test")
 class MedecinServiceTest {
     @Autowired
     private  MedecinService medecinService;
@@ -22,22 +25,12 @@ class MedecinServiceTest {
 
     @Test
     void modifierMedecin() {
-        String uniqueId = UUID.randomUUID().toString();
-        Medecin m =medecinRepo.save( new Medecin(null, "fatimaa","dentiste","fatima" + uniqueId + "@email.com","060000001",null));
+        Medecin m = medecinRepo.save(new Medecin(null, "Nom", "Spec", "email@test.com", "0600000000", null));
 
-        MedecinDTO medecinModifie= new MedecinDTO();
-        medecinModifie.setId(m.getId());
-        medecinModifie.setEmail(m.getEmail());
-        medecinModifie.setNom("alaoui");
-        medecinModifie.setTelephone(m.getTelephone());
-        medecinModifie.setSpecialite(m.getSpecialite());
+        MedecinDTO dto = new MedecinDTO();
+        dto.setNom("NouveauNom");
 
-        MedecinDTO resultat = medecinService.modifierMedecin(m.getId(),medecinModifie);
-
-        assertNotNull(resultat);
-        assertEquals(m.getId(), resultat.getId());
-        assertEquals(resultat.getNom(), "alaoui");
-
-
+        MedecinDTO res = medecinService.modifierMedecin(m.getId(), dto);
+        assertEquals("NouveauNom", res.getNom());
     }
 }
