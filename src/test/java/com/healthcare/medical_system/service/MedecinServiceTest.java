@@ -17,8 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-@WithMockUser(username = "admin", roles = {"ADMIN"})
-@EnableCaching
 class MedecinServiceTest {
     @Autowired
     private  MedecinService medecinService;
