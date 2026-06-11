@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -19,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Transactional
 @ActiveProfiles("test")
 @WithMockUser(username = "admin", roles = {"ADMIN"})
+@EnableCaching
 class DossierMedicalServiceTest {
     @Autowired
     DossierMedicalService dossierService;
