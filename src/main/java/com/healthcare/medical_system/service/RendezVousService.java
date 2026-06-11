@@ -13,6 +13,7 @@ import com.healthcare.medical_system.repository.RendezVousRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +36,7 @@ public class RendezVousService {
 
     @Transactional
     @CacheEvict(allEntries = true)
+    @CachePut(value = "rendezvousCache", key = "#result.id")
     public RendezVousDTO creerRendezVous(RendezVousDTO rdvDTO){
         Patient patient = patientRepository.findById(rdvDTO.getPatientId()).orElseThrow(()->new RuntimeException("patient non trouvé"));
         Medecin medecin = medecinRepository.findById(rdvDTO.getMedecinId()).orElseThrow(()->new RuntimeException("medecin non trouvé"));
