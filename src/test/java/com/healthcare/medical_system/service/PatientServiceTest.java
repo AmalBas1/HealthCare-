@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
+@WithMockUser(username = "admin", roles = {"ADMIN"})
 class PatientServiceTest {
     @Autowired
     private PatientService patientService;

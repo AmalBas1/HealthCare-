@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
+@WithMockUser(username = "admin", roles = {"ADMIN"})
 class DossierMedicalServiceTest {
     @Autowired
     DossierMedicalService dossierService;
