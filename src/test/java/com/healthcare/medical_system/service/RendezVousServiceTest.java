@@ -28,6 +28,8 @@ import java.util.UUID;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
+@WithMockUser(username = "admin", roles = {"ADMIN"})
+@EnableCaching
 class RendezVousServiceTest {
     @Autowired
     private RendezVousService rdvService;

@@ -20,6 +20,8 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
+@WithMockUser(username = "admin", roles = {"ADMIN"})
+@EnableCaching
 class DossierMedicalServiceTest {
     @Autowired
     DossierMedicalService dossierService;
