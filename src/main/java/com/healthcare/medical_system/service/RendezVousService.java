@@ -35,8 +35,7 @@ public class RendezVousService {
 
 
     @Transactional
-    @CacheEvict(allEntries = true)
-    @CachePut(value = "rendezvousCache", key = "#result.id")
+    @CacheEvict(value = "rendezvousCache", allEntries = true)
     public RendezVousDTO creerRendezVous(RendezVousDTO rdvDTO){
         Patient patient = patientRepository.findById(rdvDTO.getPatientId()).orElseThrow(()->new RuntimeException("patient non trouvé"));
         Medecin medecin = medecinRepository.findById(rdvDTO.getMedecinId()).orElseThrow(()->new RuntimeException("medecin non trouvé"));

@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @ActiveProfiles("test")
 @WithMockUser(username = "admin", roles = {"ADMIN"})
-@EnableCaching
 class PatientServiceTest {
     @Autowired
     private PatientService patientService;
