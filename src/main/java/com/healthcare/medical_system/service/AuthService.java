@@ -11,6 +11,7 @@ import com.healthcare.medical_system.entity.User;
 import com.healthcare.medical_system.repository.MedecinRepository;
 import com.healthcare.medical_system.repository.PatientRepository;
 import com.healthcare.medical_system.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,21 +29,21 @@ public class AuthService {
     private final PatientRepository patientRepo;
     private final MedecinRepository medecinRepo;
 
+    @Transactional
     public AuthResponse register(RegisterRequest request){
         if (userRepo.existsByUsername(request.getUsername())){
-            throw  new RuntimeException("l'utilisateur: "+request.getUsername()+ " est déjà enregistré");
+            throw new RuntimeException("L'utilisateur: " + request.getUsername() + " est déjà enregistré");
         }
         if (userRepo.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("cet email est déjà utilisé!");
+            throw new RuntimeException("Cet email est déjà utilisé !");
         }
-
 
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setRole(request.getRole());
-         user = userRepo.save(user);
+        user = userRepo.save(user);
 
         if (request.getRole() == Role.PATIENT) {
             Patient patient = new Patient();
@@ -54,7 +55,7 @@ public class AuthService {
             patient.setUser(user);
             patientRepo.save(patient);
 
-        } else if(request.getRole() == Role.MEDECIN) {
+        } else if (request.getRole() == Role.MEDECIN) {
             Medecin medecin = new Medecin();
             medecin.setNom(request.getNom());
             medecin.setTelephone(request.getTelephone());
@@ -62,13 +63,12 @@ public class AuthService {
             medecin.setSpecialite(request.getSpecialite());
             medecin.setUser(user);
             medecinRepo.save(medecin);
-
         }
-            String token = jwtUtils.genererToken(user.getUsername(), user.getRole());
 
-            return new AuthResponse(token);
+        String token = jwtUtils.genererToken(user.getUsername(), user.getRole());
+
+        return new AuthResponse(token, user.getUsername(), user.getRole());
     }
-
     public AuthResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -78,9 +78,9 @@ public class AuthService {
         );
         User user = userRepo.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
         String token = jwtUtils.genererToken(user.getUsername(), user.getRole());
 
-        return new AuthResponse(token);
-
+        return new AuthResponse(token, user.getUsername(), user.getRole());
     }
 }

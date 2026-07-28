@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,9 +36,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception{
         return http
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->  auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/medecins").hasRole("ADMIN")
+                        .requestMatchers("/api/medecins/me").hasAnyRole("ADMIN","MEDECIN")
+                        .requestMatchers("/api/patients/me").hasAnyRole("ADMIN", "PATIENT")
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .requestMatchers("/api/medecins/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/patients").hasRole("ADMIN")

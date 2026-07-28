@@ -11,7 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 
+
+//@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/medecins")
@@ -56,6 +59,13 @@ public class MedecinController {
             @RequestParam(defaultValue = "asc") String sortDir) {
         Page<MedecinDTO> medecins = medecinService.rechercherMedecinsParSpecialite(specialite, page, size, sortDir);
         return ResponseEntity.ok(medecins);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MedecinDTO> getMyProfile(Principal principal) {
+        String username = principal.getName();
+        MedecinDTO medecin = medecinService.getByUsername(username);
+        return ResponseEntity.ok(medecin);
     }
 
 }

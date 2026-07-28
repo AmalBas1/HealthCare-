@@ -2,6 +2,7 @@ package com.healthcare.medical_system.controller;
 
 import com.healthcare.medical_system.dto.PatientDTO;
 import com.healthcare.medical_system.entity.Patient;
+import com.healthcare.medical_system.repository.DossierMedicalRepository;
 import com.healthcare.medical_system.repository.PatientRepository;
 import com.healthcare.medical_system.service.PatientService;
 import com.healthcare.medical_system.service.PdfService;
@@ -13,10 +14,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
+//@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/patients")
@@ -61,7 +66,12 @@ public class PatientController {
         PatientDTO patient = patientService.consulterPatient(id);
         return ResponseEntity.ok(patient);
     }
-
+    @GetMapping("/me")
+    public ResponseEntity<PatientDTO> getMyProfile(Principal principal) {
+        String username = principal.getName();
+        PatientDTO patient = patientService.getByUsername(username);
+        return ResponseEntity.ok(patient);
+    }
     @GetMapping("/search")
     @Operation(summary = "Recherche paginée et triée des patients par nom")
     public ResponseEntity<Page<PatientDTO>> rechercherPatientsParNom(

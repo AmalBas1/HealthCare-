@@ -2,8 +2,10 @@ package com.healthcare.medical_system.service;
 
 import com.healthcare.medical_system.dto.MedecinDTO;
 import com.healthcare.medical_system.entity.Medecin;
+import com.healthcare.medical_system.entity.User;
 import com.healthcare.medical_system.mapper.MedecinMapper;
 import com.healthcare.medical_system.repository.MedecinRepository;
+import com.healthcare.medical_system.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -21,6 +23,7 @@ import java.util.List;
 public class MedecinService {
     private final MedecinRepository medecinRepository;
     private final MedecinMapper medecinMapper;
+    private final UserRepository userRepo;
 
     @Transactional
     @CacheEvict(value = "medecins",allEntries = true)
@@ -58,6 +61,18 @@ public class MedecinService {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(sortDir), "nom");
         Page<Medecin> medecinsPage = medecinRepository.findBySpecialiteContainingIgnoreCase(specialite, pageable);
         return medecinsPage.map(medecinMapper::toDTO);
+    }
+    @Transactional
+    public MedecinDTO getByUsername(String username) {
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        Medecin medecin = medecinRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Profil medecin non trouvé"));
+
+
+
+        return medecinMapper.toDTO(medecin);
     }
 
 }

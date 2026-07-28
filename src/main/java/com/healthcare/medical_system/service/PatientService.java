@@ -2,8 +2,10 @@ package com.healthcare.medical_system.service;
 
 import com.healthcare.medical_system.dto.PatientDTO;
 import com.healthcare.medical_system.entity.Patient;
+import com.healthcare.medical_system.entity.User;
 import com.healthcare.medical_system.mapper.PatientMapper;
 import com.healthcare.medical_system.repository.PatientRepository;
+import com.healthcare.medical_system.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -23,6 +25,7 @@ import java.util.List;
 public class PatientService {
     private final PatientRepository patientRepository;
     private final PatientMapper patientMapper;
+    private final UserRepository userRepo;
 
     @Transactional
     @CacheEvict(value = "patients",allEntries = true)
@@ -66,6 +69,18 @@ public class PatientService {
         return patientMapper.toDTO(patient);
     }
 
+    @Transactional
+    public PatientDTO getByUsername(String username) {
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        Patient patient = patientRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Profil patient non trouvé"));
+
+
+
+        return patientMapper.toDTO(patient);
+    }
     @Transactional
     public Page<PatientDTO> rechercherPatientsParNom(String nom, int page, int size, String sortDir) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(sortDir), "nom");
